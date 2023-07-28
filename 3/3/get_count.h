@@ -5,11 +5,14 @@ class get_count
 {
 	public:
 		int count = 0;
-	int operator () (std::vector<int> v)
+		int getCount()
+		{
+			return count;
+		}
+	void operator () (int v)
 	{
-		for (auto i : v)
-			count += (i % 3 == 0);
-		return count;
+			if (v % 3 == 0) count++ ;
+	//	return count;
 	}
 };
 

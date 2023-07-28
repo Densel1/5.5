@@ -1,5 +1,7 @@
 ﻿#include <iostream>
 #include <vector>
+#include <exception>
+#include <stdexcept>
 
 using namespace std;
 
@@ -20,17 +22,26 @@ public:
 				table[i][j] = i * j;
 			}
 		}
+//	cout << rows << endl << cols << endl;
 	}
+	int rows, cols;
+
 	class Row
 	{
 	public:
-		Row(int* a):temp(a){}
+		int r;
+		Row(int* a, int Rows):temp(a) { r = Rows; }
+
 		T& operator[](int a)
 		{
+			if (a<0 || a>r) throw invalid_argument("Wrong index");
+			cout << "rows " << r << endl;
 			return temp[a];
 		}
 		const T& operator[](int a) const
 		{
+			if (a<0 || a>r) throw invalid_argument("Wrong index");
+			cout << "rows " << r << endl;
 			return temp[a];
 		}
 		T* temp;
@@ -38,26 +49,35 @@ public:
 
 	Row operator [] (int i)
 	{
-		return Row(table[i]);
+		if (i < 0 || i > cols) throw invalid_argument("Wrong index");
+		return Row(table[i], rows);
 	}
 	const Row operator [] (int i) const
 	{
+		if (i < 0 || i > cols) throw invalid_argument("Wrong index");
 		return Row(table[i]);
 	}
 
 
 	size_t size() const { return rows * cols; }
 
+
+
 private:
 
 	T** table;
-	int rows, cols;
 };
 
 int main()
 {
-	auto test = Table<int>(2, 3);
-	test[0][0] = 4;
-	std::cout << test[0][0]<<endl; // выводит 4
-	cout << test.size();
+	try {
+		int my_row = 0;
+		auto test = Table<int>(2, 3);
+		test[0][my_row] = 4;
+		std::cout << test[0][my_row] << endl; // выводит 4
+		cout << test.size();
+	}
+	catch (const std::invalid_argument& e) {
+		std::cout << "Exception caught: " << e.what() << std::endl;
+	};
 }
